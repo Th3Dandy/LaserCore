@@ -1,3 +1,3 @@
-export enum ReleaseCanal {
+export enum ReleaseChannel {
     RELEASE = <any>"Ion",
 }
