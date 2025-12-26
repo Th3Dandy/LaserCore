@@ -1,10 +1,10 @@
 //! This module contains various utility/helper functions that do not fit into any other module
 
-use anyhow::{Context, Result};
-use serde::{Deserialize, Serialize};
+use anyhow::{ Context, Result };
+use serde::{ Deserialize, Serialize };
 use zip::ZipArchive;
 
-use crate::constants::{APP_USER_AGENT, MASTER_SERVER_URL, SERVER_BROWSER_ENDPOINT};
+use crate::constants::{ APP_USER_AGENT, MASTER_SERVER_URL, SERVER_BROWSER_ENDPOINT };
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct NorthstarServer {
@@ -42,22 +42,24 @@ pub async fn get_flightcore_version_number() -> String {
 #[tauri::command]
 pub async fn open_repair_window(handle: tauri::AppHandle) -> Result<(), String> {
     // Spawn new window
-    let repair_window = match tauri::WebviewWindowBuilder::new(
-        &handle,
-        "RepairWindow",
-        tauri::WebviewUrl::App("/#/repair".into()),
-    )
-    .build()
+    let repair_window = match
+        tauri::WebviewWindowBuilder
+            ::new(&handle, "RepairWindow", tauri::WebviewUrl::App("/#/repair".into()))
+            .build()
     {
         Ok(res) => res,
-        Err(err) => return Err(err.to_string()),
+        Err(err) => {
+            return Err(err.to_string());
+        }
     };
 
     // Set window title
     match repair_window.set_title("FlightCore Repair Window") {
         Ok(()) => (),
-        Err(err) => return Err(err.to_string()),
-    };
+        Err(err) => {
+            return Err(err.to_string());
+        }
+    }
     Ok(())
 }
 
@@ -75,10 +77,8 @@ async fn fetch_server_list() -> Result<String, anyhow::Error> {
     let res = client
         .get(url)
         .header(reqwest::header::USER_AGENT, APP_USER_AGENT)
-        .send()
-        .await?
-        .text()
-        .await?;
+        .send().await?
+        .text().await?;
 
     Ok(res)
 }
@@ -88,17 +88,23 @@ async fn fetch_server_list() -> Result<String, anyhow::Error> {
 pub async fn get_server_player_count() -> Result<(i32, usize), String> {
     let res = match fetch_server_list().await {
         Ok(res) => res,
-        Err(err) => return Err(err.to_string()),
+        Err(err) => {
+            return Err(err.to_string());
+        }
     };
 
-    let ns_servers: Vec<NorthstarServer> =
-        serde_json::from_str(&res).expect("JSON was not well-formatted");
+    let ns_servers: Vec<NorthstarServer> = serde_json
+        ::from_str(&res)
+        .expect("JSON was not well-formatted");
 
     // Get server count
     let server_count = ns_servers.len();
 
     // Sum up player count
-    let total_player_count: i32 = ns_servers.iter().map(|server| server.player_count).sum();
+    let total_player_count: i32 = ns_servers
+        .iter()
+        .map(|server| server.player_count)
+        .sum();
 
     log::info!("total_player_count: {}", total_player_count);
     log::info!("server_count:       {}", server_count);
@@ -136,24 +142,21 @@ pub fn extract(zip_file: std::fs::File, target: &std::path::Path) -> Result<()> 
         let mut f = archive.by_index(i).unwrap();
 
         //This should work fine for N* because the dir structure *should* always be the same
-        if f.enclosed_name().unwrap().starts_with("Northstar") {
-            let out = target.join(
-                f.enclosed_name()
-                    .unwrap()
-                    .strip_prefix("Northstar")
-                    .unwrap(),
-            );
+        if f.enclosed_name().unwrap().starts_with("Ion") {
+            let out = target.join(f.enclosed_name().unwrap().strip_prefix("Ion").unwrap());
 
             if (*f.name()).ends_with('/') {
                 log::info!("Create directory {}", f.name());
-                std::fs::create_dir_all(target.join(f.name()))
+                std::fs
+                    ::create_dir_all(target.join(f.name()))
                     .context("Unable to create directory")?;
                 continue;
             } else if let Some(p) = out.parent() {
                 std::fs::create_dir_all(p).context("Unable to create directory")?;
             }
 
-            let mut outfile = std::fs::OpenOptions::new()
+            let mut outfile = std::fs::OpenOptions
+                ::new()
                 .create(true)
                 .write(true)
                 .truncate(true)
@@ -170,26 +173,25 @@ pub fn extract(zip_file: std::fs::File, target: &std::path::Path) -> Result<()> 
 
 pub fn check_ea_app_or_origin_running() -> bool {
     let s = sysinfo::System::new_all();
-    let x = s.processes_by_name("Origin.exe").next().is_some()
-        || s.processes_by_name("EADesktop.exe").next().is_some();
+    let x =
+        s.processes_by_name("Origin.exe").next().is_some() ||
+        s.processes_by_name("EADesktop.exe").next().is_some();
     x
 }
 
 /// Checks if Northstar process is running
 pub fn check_northstar_running() -> bool {
     let s = sysinfo::System::new_all();
-    let x = s
-        .processes_by_name("NorthstarLauncher.exe")
-        .next()
-        .is_some()
-        || s.processes_by_name("Titanfall2.exe").next().is_some();
+    let x =
+        s.processes_by_name("NorthstarLauncher.exe").next().is_some() ||
+        s.processes_by_name("Titanfall2.exe").next().is_some();
     x
 }
 
 /// Copies a folder and all its contents to a new location
 pub fn copy_dir_all(
     src: impl AsRef<std::path::Path>,
-    dst: impl AsRef<std::path::Path>,
+    dst: impl AsRef<std::path::Path>
 ) -> std::io::Result<()> {
     std::fs::create_dir_all(&dst)?;
     for entry in std::fs::read_dir(src)? {
@@ -208,7 +210,7 @@ pub fn copy_dir_all(
 /// Old folders are not removed
 pub fn move_dir_all(
     src: impl AsRef<std::path::Path>,
-    dst: impl AsRef<std::path::Path>,
+    dst: impl AsRef<std::path::Path>
 ) -> std::io::Result<()> {
     std::fs::create_dir_all(&dst)?;
     for entry in std::fs::read_dir(src)? {
@@ -225,6 +227,42 @@ pub fn move_dir_all(
 }
 
 /// Helps with converting release candidate numbers which are different on Thunderstore
+/// Converts Ion version schema where patch version contains encoded build info
+/// Format: <base_patch> + 000 + ION_PATCH (last 5 digits)
+/// Example: "1.31.400012" -> patch=400012 where base_patch=4, ION_PATCH=00012
+/// Returns the original version if not in Ion format
+pub fn convert_ion_version_number(version_number: String) -> String {
+    // Check if version matches Ion format (major.minor.large_patch with 6+ digits)
+    let re = regex::Regex::new(r"^(\d+)\.(\d+)\.(\d{6,})$").unwrap();
+
+    if let Some(captures) = re.captures(&version_number) {
+        let major_version: u32 = captures[1].parse().unwrap();
+        let minor_version: u32 = captures[2].parse().unwrap();
+        let combined_patch: &str = &captures[3];
+
+        // Split patch version: last 5 digits are ION_PATCH, everything before is base patch
+        // For example: 400012 -> base_patch=4, ION_PATCH=00012
+        let patch_len = combined_patch.len();
+        let base_patch = &combined_patch[0..patch_len - 5];
+        let ion_patch = &combined_patch[patch_len - 5..];
+
+        log::info!(
+            "Ion version detected: {}.{}.{} (base patch: {}, ION_PATCH: {})",
+            major_version,
+            minor_version,
+            combined_patch,
+            base_patch,
+            ion_patch
+        );
+
+        // Return as-is for now, as Thunderstore uses this format
+        return version_number;
+    }
+
+    // Not in Ion format, return as-is
+    version_number
+}
+
 /// due to restrictions imposed by the platform
 pub fn convert_release_candidate_number(version_number: String) -> String {
     let release_candidate_suffix = "-rc";
@@ -253,8 +291,9 @@ pub fn convert_release_candidate_number(version_number: String) -> String {
         let trimmed_combined_patch_version = combined_patch_version.trim_start_matches('0');
 
         // Combine all
-        let version_number =
-            format!("{major_version}.{minor_version}.{trimmed_combined_patch_version}");
+        let version_number = format!(
+            "{major_version}.{minor_version}.{trimmed_combined_patch_version}"
+        );
         return version_number;
     }
 
@@ -318,5 +357,36 @@ mod tests {
         let expected_output = "1.2.3456";
 
         assert_eq!(output, expected_output);
+    }
+
+    #[test]
+    fn test_ion_version_format() {
+        let input = "1.31.400012".to_string();
+        let output = convert_ion_version_number(input.clone());
+        // Ion format is returned as-is since Thunderstore uses this format
+        assert_eq!(output, input);
+    }
+
+    #[test]
+    fn test_ion_version_different_patch() {
+        let input = "1.25.500001".to_string();
+        let output = convert_ion_version_number(input.clone());
+        assert_eq!(output, input);
+    }
+
+    #[test]
+    fn test_non_ion_version_format() {
+        let input = "1.2.3".to_string();
+        let output = convert_ion_version_number(input.clone());
+        // Regular version should be returned unchanged
+        assert_eq!(output, input);
+    }
+
+    #[test]
+    fn test_short_patch_not_ion() {
+        let input = "1.2.12345".to_string();
+        let output = convert_ion_version_number(input.clone());
+        // 5 digits is not enough for Ion format (requires 6+)
+        assert_eq!(output, input);
     }
 }

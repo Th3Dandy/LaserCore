@@ -1,15 +1,12 @@
 use anyhow::Result;
-use serde::{Deserialize, Serialize};
+use serde::{ Deserialize, Serialize };
 use std::time::Duration;
-use std::{cell::RefCell, time::Instant};
-use tauri::{AppHandle, Emitter};
+use std::{ cell::RefCell, time::Instant };
+use tauri::{ AppHandle, Emitter };
 use ts_rs::TS;
 
-use crate::constants::{CORE_MODS, NORTHSTAR_DEFAULT_PROFILE, NORTHSTAR_DLL};
-use crate::{
-    util::{extract, move_dir_all},
-    GameInstall, InstallType,
-};
+use crate::constants::{ CORE_MODS, NORTHSTAR_DEFAULT_PROFILE, NORTHSTAR_DLL };
+use crate::{ util::{ extract, move_dir_all }, GameInstall, InstallType };
 
 #[cfg(target_os = "windows")]
 use crate::platform_specific::windows;
@@ -36,21 +33,17 @@ pub async fn install_northstar_wrapper(
     app: AppHandle,
     game_install: GameInstall,
     northstar_package_name: Option<String>,
-    version_number: Option<String>,
+    version_number: Option<String>
 ) -> Result<bool, String> {
     log::info!("Running Northstar install");
 
     // Get Northstar package name (`Northstar` vs `NorthstarReleaseCandidate`)
     let northstar_package_name = northstar_package_name
         .map(|name| {
-            if name.len() <= 1 {
-                "Northstar".to_string()
-            } else {
-                name
-            }
+            if name.len() <= 1 { "Northstar".to_string() } else { name }
         })
         .unwrap_or("Northstar".to_string());
-
+    log::info!("Using Northstar package name: {}", northstar_package_name);
     match install_northstar(app, game_install, northstar_package_name, version_number).await {
         Ok(_) => Ok(true),
         Err(err) => {
@@ -65,7 +58,7 @@ pub async fn install_northstar_wrapper(
 pub async fn update_northstar(
     app: AppHandle,
     game_install: GameInstall,
-    northstar_package_name: Option<String>,
+    northstar_package_name: Option<String>
 ) -> Result<bool, String> {
     log::info!("Updating Northstar");
 
@@ -80,7 +73,7 @@ pub async fn update_northstar(
 async fn do_install(
     app: AppHandle,
     nmod: &thermite::model::ModVersion,
-    game_install: GameInstall,
+    game_install: GameInstall
 ) -> Result<()> {
     let filename = format!("northstar-{}.zip", nmod.version);
     let temp_dir = format!("{}/___flightcore-temp", game_install.game_path);
@@ -95,45 +88,34 @@ async fn do_install(
     log::info!("Download path: {download_path}");
 
     let last_emit = RefCell::new(Instant::now()); // Keep track of the last time a signal was emitted
-    let mut nfile = std::fs::File::options()
+    let mut nfile = std::fs::File
+        ::options()
         .read(true)
         .write(true)
         .truncate(true)
         .create(true)
         .open(download_path)?;
-    thermite::core::manage::download_with_progress(
-        &mut nfile,
-        &nmod.url,
-        |delta, current, total| {
-            if delta != 0 {
-                // Only emit a signal once every 100ms
-                // This way we don't bombard the frontend with events on fast download speeds
-                let time_since_last_emit = Instant::now().duration_since(*last_emit.borrow());
-                if time_since_last_emit >= Duration::from_millis(100) {
-                    app.emit(
-                        "northstar-install-download-progress",
-                        InstallProgress {
-                            current_downloaded: current,
-                            total_size: total,
-                            state: InstallState::Downloading,
-                        },
-                    )
-                    .unwrap();
-                    *last_emit.borrow_mut() = Instant::now();
-                }
+    thermite::core::manage::download_with_progress(&mut nfile, &nmod.url, |delta, current, total| {
+        if delta != 0 {
+            // Only emit a signal once every 100ms
+            // This way we don't bombard the frontend with events on fast download speeds
+            let time_since_last_emit = Instant::now().duration_since(*last_emit.borrow());
+            if time_since_last_emit >= Duration::from_millis(100) {
+                app.emit("northstar-install-download-progress", InstallProgress {
+                    current_downloaded: current,
+                    total_size: total,
+                    state: InstallState::Downloading,
+                }).unwrap();
+                *last_emit.borrow_mut() = Instant::now();
             }
-        },
-    )?;
+        }
+    })?;
 
-    app.emit(
-        "northstar-install-download-progress",
-        InstallProgress {
-            current_downloaded: 0,
-            total_size: 0,
-            state: InstallState::Extracting,
-        },
-    )
-    .unwrap();
+    app.emit("northstar-install-download-progress", InstallProgress {
+        current_downloaded: 0,
+        total_size: 0,
+        state: InstallState::Extracting,
+    }).unwrap();
 
     log::info!("Extracting Northstar...");
     extract(nfile, std::path::Path::new(&extract_directory))?;
@@ -147,8 +129,9 @@ async fn do_install(
 
         // Move DLL into the default R2Northstar Profile
         let old_dll_path = format!("{extract_directory}/{NORTHSTAR_DLL}");
-        let new_dll_path =
-            format!("{extract_directory}/{NORTHSTAR_DEFAULT_PROFILE}/{NORTHSTAR_DLL}");
+        let new_dll_path = format!(
+            "{extract_directory}/{NORTHSTAR_DEFAULT_PROFILE}/{NORTHSTAR_DLL}"
+        );
         std::fs::rename(old_dll_path, new_dll_path)?;
 
         // rename default R2Northstar Profile to the profile we want to use
@@ -163,7 +146,9 @@ async fn do_install(
     for core_mod in CORE_MODS {
         let path_to_delete_string = format!(
             "{}/{}/mods/{}/",
-            game_install.game_path, game_install.profile, core_mod
+            game_install.game_path,
+            game_install.profile,
+            core_mod
         );
         log::info!("Preparing to remove {}", path_to_delete_string);
 
@@ -177,10 +162,7 @@ async fn do_install(
         }
 
         if !path_to_delete.is_dir() {
-            log::error!(
-                "{} exists but is a file? This should never happen",
-                path_to_delete_string
-            );
+            log::error!("{} exists but is a file? This should never happen", path_to_delete_string);
             continue;
         }
 
@@ -197,10 +179,10 @@ async fn do_install(
         // Finally delete file
         match std::fs::remove_dir_all(path_to_delete) {
             Ok(()) => {
-                log::info!("Succesfully removed")
+                log::info!("Succesfully removed");
             }
             Err(err) => {
-                log::error!("Failed removing {} due to {}", path_to_delete_string, err)
+                log::error!("Failed removing {} due to {}", path_to_delete_string, err);
             }
         };
     }
@@ -223,18 +205,14 @@ async fn do_install(
 
     // Delete old copy
     log::info!("Delete temporary directory");
-    std::fs::remove_dir_all(temp_dir).unwrap();
+    // std::fs::remove_dir_all(temp_dir).unwrap();
 
     log::info!("Done installing Northstar!");
-    app.emit(
-        "northstar-install-download-progress",
-        InstallProgress {
-            current_downloaded: 0,
-            total_size: 0,
-            state: InstallState::Done,
-        },
-    )
-    .unwrap();
+    app.emit("northstar-install-download-progress", InstallProgress {
+        current_downloaded: 0,
+        total_size: 0,
+        state: InstallState::Done,
+    }).unwrap();
 
     Ok(())
 }
@@ -243,7 +221,7 @@ pub async fn install_northstar(
     app: AppHandle,
     game_install: GameInstall,
     northstar_package_name: String,
-    version_number: Option<String>,
+    version_number: Option<String>
 ) -> Result<String, String> {
     let index = match thermite::api::get_package_index() {
         Ok(res) => res.to_vec(),
@@ -267,13 +245,12 @@ pub async fn install_northstar(
     match do_install(app, nmod.versions.get(version).unwrap(), game_install).await {
         Ok(_) => (),
         Err(err) => {
-            if game_path
-                .to_lowercase()
-                .contains(&r"C:\Program Files\".to_lowercase())
-            // default is `C:\Program Files\EA Games\Titanfall2`
+            if
+                game_path.to_lowercase().contains(&r"C:\Program Files\".to_lowercase())
+                // default is `C:\Program Files\EA Games\Titanfall2`
             {
                 return Err(
-                    "Cannot install to default EA App install path, please move Titanfall2 to a different install location.".to_string(),
+                    "Cannot install to default EA App install path, please move Titanfall2 to a different install location.".to_string()
                 );
             } else {
                 return Err(err.to_string());
@@ -294,11 +271,13 @@ pub fn find_game_install_location() -> Result<GameInstall, String> {
             {
                 let snap_dir = match std::env::var("SNAP_USER_DATA") {
                     Ok(snap_dir) => std::path::PathBuf::from(snap_dir),
-                    Err(_) => match dirs::home_dir() {
-                        Some(path) => path,
-                        None => std::path::PathBuf::new(),
-                    }
-                    .join("snap"),
+                    Err(_) =>
+                        (
+                            match dirs::home_dir() {
+                                Some(path) => path,
+                                None => std::path::PathBuf::new(),
+                            }
+                        ).join("snap"),
                 };
 
                 if steamdir.path().starts_with(snap_dir) {
@@ -325,10 +304,8 @@ pub fn find_game_install_location() -> Result<GameInstall, String> {
                     return Ok(game_install);
                 }
                 Ok(None) => log::info!("Couldn't locate your Titanfall 2 Steam install."),
-                Err(err) => log::info!(
-                    "Something went wrong while trying to find Titanfall 2 {}",
-                    err
-                ),
+                Err(err) =>
+                    log::info!("Something went wrong while trying to find Titanfall 2 {}", err),
             }
         }
         Err(err) => log::info!("Couldn't locate Steam on this computer! {}", err),
@@ -348,7 +325,7 @@ pub fn find_game_install_location() -> Result<GameInstall, String> {
         Err(err) => {
             log::info!("{}", err);
         }
-    };
+    }
 
     Err("Could not auto-detect game install location! Please enter it manually.".to_string())
 }

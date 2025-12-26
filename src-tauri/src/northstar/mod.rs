@@ -4,10 +4,10 @@ pub mod install;
 pub mod profile;
 
 use crate::util::check_ea_app_or_origin_running;
-use crate::{constants::CORE_MODS, platform_specific::get_host_os, GameInstall, InstallType};
-use crate::{NorthstarThunderstoreRelease, NorthstarThunderstoreReleaseWrapper};
+use crate::{ constants::CORE_MODS, platform_specific::get_host_os, GameInstall, InstallType };
+use crate::{ NorthstarThunderstoreRelease, NorthstarThunderstoreReleaseWrapper };
 use anyhow::anyhow;
-use serde::{Deserialize, Serialize};
+use serde::{ Deserialize, Serialize };
 use ts_rs::TS;
 
 #[derive(Serialize, Deserialize, Debug, Clone, TS)]
@@ -19,8 +19,10 @@ pub struct NorthstarLaunchOptions {
 
 /// Gets list of available Northstar versions from Thunderstore
 #[tauri::command]
-pub async fn get_available_northstar_versions(
-) -> Result<Vec<NorthstarThunderstoreReleaseWrapper>, ()> {
+pub async fn get_available_northstar_versions() -> Result<
+    Vec<NorthstarThunderstoreReleaseWrapper>,
+    ()
+> {
     let northstar_package_name = "Northstar";
     let index = thermite::api::get_package_index().unwrap().to_vec();
     let nsmod = index
@@ -63,7 +65,7 @@ pub async fn get_available_northstar_versions(
 #[tauri::command]
 pub async fn check_is_northstar_outdated(
     game_install: GameInstall,
-    northstar_package_name: Option<String>,
+    northstar_package_name: Option<String>
 ) -> Result<bool, String> {
     let northstar_package_name = match northstar_package_name {
         Some(northstar_package_name) => {
@@ -78,14 +80,16 @@ pub async fn check_is_northstar_outdated(
 
     let index = match thermite::api::get_package_index() {
         Ok(res) => res.to_vec(),
-        Err(err) => return Err(format!("Couldn't check if Northstar up-to-date: {err}")),
+        Err(err) => {
+            return Err(format!("Couldn't check if Northstar up-to-date: {err}"));
+        }
     };
     let nmod = index
         .iter()
         .find(|f| f.name.to_lowercase() == northstar_package_name.to_lowercase())
         .expect("Couldn't find Northstar on thunderstore???");
     // .ok_or_else(|| anyhow!("Couldn't find Northstar on thunderstore???"))?;
-
+    log::info!("Latest Northstar version on Thunderstore: {}", nmod.latest);
     let version_number = match get_northstar_version_number(game_install) {
         Ok(version_number) => version_number,
         Err(err) => {
@@ -94,9 +98,11 @@ pub async fn check_is_northstar_outdated(
             return Err(err);
         }
     };
-
+    log::info!("Installed Northstar version: {}", version_number);
     // Release candidate version numbers are different between `mods.json` and Thunderstore
     let version_number = crate::util::convert_release_candidate_number(version_number);
+    // Handle Ion version schema if applicable
+    let version_number = crate::util::convert_ion_version_number(version_number);
 
     if version_number != nmod.latest {
         log::info!("Installed Northstar version outdated");
@@ -114,7 +120,9 @@ pub fn check_mod_version_number(path_to_mod_folder: &str) -> Result<String, anyh
 
     let mod_version_number = match parsed_json.get("Version").and_then(|value| value.as_str()) {
         Some(version_number) => version_number,
-        None => return Err(anyhow!("No version number found")),
+        None => {
+            return Err(anyhow!("No version number found"));
+        }
     };
 
     log::info!("{}", mod_version_number);
@@ -129,21 +137,27 @@ pub fn get_northstar_version_number(game_install: GameInstall) -> Result<String,
 
     // TODO:
     // Check if NorthstarLauncher.exe exists and check its version number
-    let initial_version_number = match check_mod_version_number(&format!(
-        "{}/{}/mods/{}",
-        game_install.game_path, game_install.profile, CORE_MODS[0]
-    )) {
+    let initial_version_number = match
+        check_mod_version_number(
+            &format!("{}/{}/mods/{}", game_install.game_path, game_install.profile, CORE_MODS[0])
+        )
+    {
         Ok(version_number) => version_number,
-        Err(err) => return Err(err.to_string()),
+        Err(err) => {
+            return Err(err.to_string());
+        }
     };
 
     for core_mod in CORE_MODS {
-        let current_version_number = match check_mod_version_number(&format!(
-            "{}/{}/mods/{}",
-            game_install.game_path, game_install.profile, core_mod
-        )) {
+        let current_version_number = match
+            check_mod_version_number(
+                &format!("{}/{}/mods/{}", game_install.game_path, game_install.profile, core_mod)
+            )
+        {
             Ok(version_number) => version_number,
-            Err(err) => return Err(err.to_string()),
+            Err(err) => {
+                return Err(err.to_string());
+            }
         };
         if current_version_number != initial_version_number {
             // We have a version number mismatch
@@ -159,7 +173,7 @@ pub fn get_northstar_version_number(game_install: GameInstall) -> Result<String,
 #[tauri::command]
 pub fn launch_northstar(
     game_install: GameInstall,
-    launch_options: NorthstarLaunchOptions,
+    launch_options: NorthstarLaunchOptions
 ) -> Result<String, String> {
     dbg!(game_install.clone());
 
@@ -172,11 +186,13 @@ pub fn launch_northstar(
     // Explicitly fail early certain (currently) unsupported install setups
     if host_os != "windows" {
         if !matches!(game_install.install_type, InstallType::STEAM) {
-            return Err(format!(
-                "Not yet implemented for \"{}\" with Titanfall2 installed via \"{:?}\"",
-                get_host_os(),
-                game_install.install_type
-            ));
+            return Err(
+                format!(
+                    "Not yet implemented for \"{}\" with Titanfall2 installed via \"{:?}\"",
+                    get_host_os(),
+                    game_install.install_type
+                )
+            );
         }
 
         return launch_northstar_steam(game_install);
@@ -193,7 +209,7 @@ pub fn launch_northstar(
         let ea_app_is_running = check_ea_app_or_origin_running();
         if !ea_app_is_running {
             return Err(
-                anyhow!("EA App not running, start EA App before launching Northstar").to_string(),
+                anyhow!("EA App not running, start EA App before launching Northstar").to_string()
             );
         }
     }
@@ -206,15 +222,17 @@ pub fn launch_northstar(
     }
 
     // Only Windows with Steam or Origin are supported at the moment
-    if host_os == "windows"
-        && (matches!(game_install.install_type, InstallType::STEAM)
-            || matches!(game_install.install_type, InstallType::ORIGIN)
-            || matches!(game_install.install_type, InstallType::UNKNOWN))
+    if
+        host_os == "windows" &&
+        (matches!(game_install.install_type, InstallType::STEAM) ||
+            matches!(game_install.install_type, InstallType::ORIGIN) ||
+            matches!(game_install.install_type, InstallType::UNKNOWN))
     {
         let ns_exe_path = format!("{}/NorthstarLauncher.exe", game_install.game_path);
         let ns_profile_arg = format!("-profile={}", game_install.profile);
 
-        let mut output = std::process::Command::new("C:\\Windows\\System32\\cmd.exe")
+        let mut output = std::process::Command
+            ::new("C:\\Windows\\System32\\cmd.exe")
             .args(["/C", "start", "", &ns_exe_path, &ns_profile_arg])
             .spawn()
             .expect("failed to execute process");
@@ -222,11 +240,7 @@ pub fn launch_northstar(
         return Ok("Launched game".to_string());
     }
 
-    Err(format!(
-        "Not yet implemented for {:?} on {}",
-        game_install.install_type,
-        get_host_os()
-    ))
+    Err(format!("Not yet implemented for {:?} on {}", game_install.install_type, get_host_os()))
 }
 
 /// Prepare Northstar and Launch through Steam using the Browser Protocol
@@ -239,15 +253,15 @@ pub fn launch_northstar_steam(game_install: GameInstall) -> Result<String, Strin
         Ok(steamdir) => {
             if get_host_os() != "windows" {
                 match steamdir.compat_tool_mapping() {
-                    Ok(map) => match map.get(&thermite::TITANFALL2_STEAM_ID) {
-                        Some(_) => {}
-                        None => {
-                            return Err(
-                                "Titanfall2 was not configured to use a compatibility tool"
-                                    .to_string(),
-                            );
+                    Ok(map) =>
+                        match map.get(&thermite::TITANFALL2_STEAM_ID) {
+                            Some(_) => {}
+                            None => {
+                                return Err(
+                                    "Titanfall2 was not configured to use a compatibility tool".to_string()
+                                );
+                            }
                         }
-                    },
                     Err(_) => {
                         return Err("Could not get compatibility tool mapping".to_string());
                     }
@@ -265,11 +279,15 @@ pub fn launch_northstar_steam(game_install: GameInstall) -> Result<String, Strin
         return Err("Couldn't access Titanfall2 directory".to_string());
     }
 
-    match open::that(format!(
-        "steam://run/{}//-profile={} --northstar/",
-        thermite::TITANFALL2_STEAM_ID,
-        game_install.profile
-    )) {
+    match
+        open::that(
+            format!(
+                "steam://run/{}//-profile={} --northstar/",
+                thermite::TITANFALL2_STEAM_ID,
+                game_install.profile
+            )
+        )
+    {
         Ok(()) => Ok("Started game".to_string()),
         Err(_err) => Err("Failed to launch Titanfall 2 via Steam".to_string()),
     }

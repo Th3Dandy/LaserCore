@@ -1,10 +1,10 @@
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { NorthstarState } from '../utils/NorthstarState';
-import { ReleaseCanal } from '../utils/ReleaseCanal';
+import { defineComponent } from "vue";
+import { NorthstarState } from "../utils/NorthstarState";
+import { ReleaseCanal } from "../utils/ReleaseCanal";
 
 export default defineComponent({
-    name: 'PlayButton',
+    name: "PlayButton",
     computed: {
         currentCanal: {
             get(): ReleaseCanal {
@@ -12,9 +12,9 @@ export default defineComponent({
             },
             set(value: ReleaseCanal) {
                 if (value !== this.currentCanal) {
-                    this.$store.commit('toggleReleaseCandidate');
+                    this.$store.commit("toggleReleaseCandidate");
                 }
-            }
+            },
         },
         playButtonLabel(): string {
             if (this.$store.state.northstar_is_running) {
@@ -42,34 +42,30 @@ export default defineComponent({
         northstarIsRunning(): boolean {
             return this.$store.state.northstar_is_running;
         },
-        options(): { key: string, value: string }[] {
+        options(): { key: string; value: string }[] {
             return Object.keys(ReleaseCanal).map(function (v) {
                 return {
                     key: v,
-                    value: Object.keys(ReleaseCanal)[Object.values(ReleaseCanal).indexOf(v)]
-                }
+                    value: Object.keys(ReleaseCanal)[
+                        Object.values(ReleaseCanal).indexOf(v)
+                    ],
+                };
             });
         },
-        selectOptions(): { label: string, options: { value: ReleaseCanal, label: string }[] }[] {
+        selectOptions(): {
+            label: string;
+            options: { value: ReleaseCanal; label: string }[];
+        }[] {
             return [
                 {
-                    label: 'Beta',
-                    options: [
-                        {
-                            value: ReleaseCanal.RELEASE_CANDIDATE,
-                            label: this.$t('channels.names.NorthstarReleaseCandidate'),
-                        },
-                    ]
-                },
-                {
-                    label: 'Stable',
+                    label: "Stable",
                     options: [
                         {
                             value: ReleaseCanal.RELEASE,
-                            label: 'Northstar',
+                            label: "Northstar",
                         },
-                    ]
-                }
+                    ],
+                },
             ];
         },
         showReleaseSwitch(): boolean {
@@ -81,27 +77,36 @@ export default defineComponent({
          */
         buttonRadiusStyle(): string {
             return this.showReleaseSwitch
-                ? 'border-radius: 2px 0 0 2px;'
-                : 'border-radius: 2px';
+                ? "border-radius: 2px 0 0 2px;"
+                : "border-radius: 2px";
         },
     },
     methods: {
         async launchGame() {
-            this.$store.commit('launchGame');
-        }
-    }
+            this.$store.commit("launchGame");
+        },
+    },
 });
 </script>
 
 <template>
     <nav>
-        <el-button :disabled="northstarIsRunning"
-                   type="primary" size="large" @click="launchGame"
-                   class="fc_launch__button" :style="buttonRadiusStyle">
+        <el-button
+            :disabled="northstarIsRunning"
+            type="primary"
+            size="large"
+            @click="launchGame"
+            class="fc_launch__button"
+            :style="buttonRadiusStyle"
+        >
             {{ playButtonLabel }}
         </el-button>
-        <el-select v-if="showReleaseSwitch" :disabled="northstarIsRunning"
-                   v-model="currentCanal" placeholder="Select">
+        <el-select
+            v-if="showReleaseSwitch"
+            :disabled="northstarIsRunning"
+            v-model="currentCanal"
+            placeholder="Select"
+        >
             <el-option-group
                 v-for="group in selectOptions"
                 :key="group.label"
