@@ -42,7 +42,7 @@
 import { defineComponent } from "vue";
 import { InstallProgress } from "../../../src-tauri/bindings/InstallProgress";
 import { invoke } from "@tauri-apps/api/core";
-import { ReleaseCanal } from "../utils/ReleaseCanal";
+import { ReleaseChannel } from "../utils/ReleaseChannel";
 import { load } from '@tauri-apps/plugin-store';
 import { showErrorNotification, showNotification } from "../utils/ui";
 import { getCurrentWindow } from "@tauri-apps/api/window";
@@ -74,7 +74,7 @@ export default defineComponent({
                 0
             );
 
-            let install_northstar_result = invoke("install_northstar_wrapper", { gameInstall: this.$store.state.game_install, northstarPackageName: ReleaseCanal.RELEASE });
+            let install_northstar_result = invoke("install_northstar_wrapper", { gameInstall: this.$store.state.game_install, northstarPackageName: ReleaseChannel.RELEASE });
 
             getCurrentWindow().listen<InstallProgress>(
                 'northstar-install-download-progress',

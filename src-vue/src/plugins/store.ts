@@ -3,7 +3,7 @@ import { listen, Event as TauriEvent } from "@tauri-apps/api/event";
 import { Tabs } from "../utils/Tabs";
 import { invoke } from "@tauri-apps/api/core";
 import { GameInstall } from "../utils/GameInstall";
-import { ReleaseCanal } from "../utils/ReleaseCanal";
+import { ReleaseChannel } from "../utils/ReleaseChannel";
 import { FlightCoreVersion } from "../../../src-tauri/bindings/FlightCoreVersion";
 import { NotificationHandle } from 'element-plus';
 import { NorthstarState } from '../utils/NorthstarState';
@@ -35,7 +35,7 @@ export interface FlightCoreStore {
 
     installed_northstar_version: string,
     northstar_state: NorthstarState,
-    northstar_release_canal: ReleaseCanal,
+    northstar_release_canal: ReleaseChannel,
     enableReleasesSwitch: boolean,
     releaseNotes: ReleaseInfo[],
 
@@ -74,7 +74,7 @@ export const store = createStore<FlightCoreStore>({
 
             installed_northstar_version: "",
             northstar_state: NorthstarState.GAME_NOT_FOUND,
-            northstar_release_canal: ReleaseCanal.RELEASE,
+            northstar_release_canal: ReleaseChannel.RELEASE,
             enableReleasesSwitch: false,
             releaseNotes: [],
 
@@ -325,9 +325,9 @@ export const store = createStore<FlightCoreStore>({
         },
         async toggleReleaseCandidate(state: FlightCoreStore) {
             // Flip between RELEASE and RELEASE_CANDIDATE
-            state.northstar_release_canal = state.northstar_release_canal === ReleaseCanal.RELEASE
-                ? ReleaseCanal.RELEASE_CANDIDATE
-                : ReleaseCanal.RELEASE;
+            state.northstar_release_canal = state.northstar_release_canal === ReleaseChannel.RELEASE
+                ? ReleaseChannel.RELEASE_CANDIDATE
+                : ReleaseChannel.RELEASE;
 
             // Save change in persistent store
             await persistentStore.set('northstar-release-canal', { value: state.northstar_release_canal });

@@ -1,16 +1,16 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { NorthstarState } from "../utils/NorthstarState";
-import { ReleaseCanal } from "../utils/ReleaseCanal";
+import { ReleaseChannel } from "../utils/ReleaseChannel";
 
 export default defineComponent({
     name: "PlayButton",
     computed: {
         currentCanal: {
-            get(): ReleaseCanal {
+            get(): ReleaseChannel {
                 return this.$store.state.northstar_release_canal;
             },
-            set(value: ReleaseCanal) {
+            set(value: ReleaseChannel) {
                 if (value !== this.currentCanal) {
                     this.$store.commit("toggleReleaseCandidate");
                 }
@@ -43,25 +43,25 @@ export default defineComponent({
             return this.$store.state.northstar_is_running;
         },
         options(): { key: string; value: string }[] {
-            return Object.keys(ReleaseCanal).map(function (v) {
+            return Object.keys(ReleaseChannel).map(function (v) {
                 return {
                     key: v,
-                    value: Object.keys(ReleaseCanal)[
-                        Object.values(ReleaseCanal).indexOf(v)
+                    value: Object.keys(ReleaseChannel)[
+                        Object.values(ReleaseChannel).indexOf(v)
                     ],
                 };
             });
         },
         selectOptions(): {
             label: string;
-            options: { value: ReleaseCanal; label: string }[];
+            options: { value: ReleaseChannel; label: string }[];
         }[] {
             return [
                 {
                     label: "Stable",
                     options: [
                         {
-                            value: ReleaseCanal.RELEASE,
+                            value: ReleaseChannel.RELEASE,
                             label: "Northstar",
                         },
                     ],

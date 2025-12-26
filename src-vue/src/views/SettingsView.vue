@@ -144,7 +144,7 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import { invoke } from "@tauri-apps/api/core";
-import { ReleaseCanal } from "../utils/ReleaseCanal";
+import { ReleaseChannel } from "../utils/ReleaseChannel";
 import { load } from '@tauri-apps/plugin-store';
 import { showErrorNotification, showNotification } from "../utils/ui";
 import LanguageSelector from "../components/LanguageSelector.vue";
@@ -195,7 +195,7 @@ export default defineComponent({
 
                 // When disabling switch, we switch release canal to stable release, to avoid users being
                 // stuck with release candidate after disabling release switching.
-                if (!value && this.$store.state.northstar_release_canal !== ReleaseCanal.RELEASE) {
+                if (!value && this.$store.state.northstar_release_canal !== ReleaseChannel.RELEASE) {
                     this.$store.commit('toggleReleaseCandidate');
                 }
             }
