@@ -245,18 +245,19 @@ pub fn convert_ion_version_number(version_number: String) -> String {
         let patch_len = combined_patch.len();
         let base_patch = &combined_patch[0..patch_len - 5];
         let ion_patch = &combined_patch[patch_len - 5..];
-
-        log::info!(
-            "Ion version detected: {}.{}.{} (base patch: {}, ION_PATCH: {})",
-            major_version,
-            minor_version,
-            combined_patch,
-            base_patch,
-            ion_patch
-        );
+        // split the ion patch to only show the last digits that are not leading zeroes
+        let ion_patch_trimmed = ion_patch.trim_start_matches('0');
+        // log::info!(
+        //     "Ion version detected: {}.{}.{} (base patch: {}, ION_PATCH: {})",
+        //     major_version,
+        //     minor_version,
+        //     combined_patch,
+        //     base_patch,
+        //     ion_patch_trimmed
+        // );
 
         // Return as-is for now, as Thunderstore uses this format
-        return version_number;
+        return format!("{}.{}.{}-{}", major_version, minor_version, base_patch, ion_patch_trimmed);
     }
 
     // Not in Ion format, return as-is
