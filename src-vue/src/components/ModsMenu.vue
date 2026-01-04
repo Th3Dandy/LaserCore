@@ -1,30 +1,43 @@
 <template>
     <nav class="fc_mods__menu">
-        <el-menu
-            default-active="1"
-            text-color="#fff"
-        >
-            <h5>{{ $t('menu.mods') }}</h5>
+        <el-menu default-active="1" text-color="#fff">
+            <h5>{{ $t("menu.mods") }}</h5>
             <el-menu-item index="1" @click="$emit('showLocalMods', true)">
                 <el-icon><Folder /></el-icon>
-                <span>{{ $t('mods.menu.local') }}</span>
+                <span>{{ $t("mods.menu.local") }}</span>
             </el-menu-item>
 
             <!-- Display a badge if there are some outdated Thunderstore mods -->
-            <el-menu-item v-if="outdatedThunderstoreModsCount !== 0" index="2" @click="$emit('showLocalMods', false)">
-                <el-badge :value="outdatedThunderstoreModsCount" class="item" type="warning">
+            <el-menu-item
+                v-if="outdatedThunderstoreModsCount !== 0"
+                index="2"
+                @click="$emit('showLocalMods', false)"
+            >
+                <el-badge
+                    :value="outdatedThunderstoreModsCount"
+                    class="item"
+                    type="warning"
+                >
                     <el-icon><Connection /></el-icon>
-                    <span>{{ $t('mods.menu.online') }}</span>
+                    <span>{{ $t("mods.menu.online") }}</span>
                 </el-badge>
             </el-menu-item>
-            <el-menu-item v-else index="2" @click="$emit('showLocalMods', false)">
+            <el-menu-item
+                v-else
+                index="2"
+                @click="$emit('showLocalMods', false)"
+            >
                 <el-icon><Connection /></el-icon>
-                <span>{{ $t('mods.menu.online') }}</span>
+                <span>{{ $t("mods.menu.online") }}</span>
             </el-menu-item>
 
             <!-- Search inputs -->
-            <h5>{{ $t('mods.menu.filter') }}</h5>
-            <el-input v-model="$store.state.search.searchValue" :placeholder="$t('mods.menu.search')" clearable />
+            <h5>{{ $t("mods.menu.filter") }}</h5>
+            <el-input
+                v-model="$store.state.search.searchValue"
+                :placeholder="$t('mods.menu.search')"
+                clearable
+            />
             <el-select
                 v-if="!showingLocalMods"
                 v-model="$store.state.search.sortValue"
@@ -42,6 +55,7 @@
                 v-if="!showingLocalMods"
                 v-model="$store.state.search.selectedCategories"
                 :placeholder="$t('mods.menu.select_categories')"
+                multiple
                 popper-class="fc_mods__select-dropdown"
             >
                 <el-option
@@ -51,42 +65,46 @@
                     :value="item"
                 />
             </el-select>
-
         </el-menu>
     </nav>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { SortOptions } from '../utils/SortOptions.d';
+import { defineComponent } from "vue";
+import { SortOptions } from "../utils/SortOptions.d";
 import { isThunderstoreModOutdated } from "../utils/thunderstore/version";
 import { ThunderstoreMod } from "../../../src-tauri/bindings/ThunderstoreMod";
 
 export default defineComponent({
-    name: 'ModsMenu',
+    name: "ModsMenu",
     props: {
         showingLocalMods: {
             required: true,
-            type: Boolean
-        }
+            type: Boolean,
+        },
     },
     mounted() {
         this.$store.state.search.sortValue = this.sortValues[3].value;
     },
     computed: {
         outdatedThunderstoreModsCount(): number {
-            return this.$store.state.thunderstoreMods
-                .filter((mod: ThunderstoreMod) => isThunderstoreModOutdated(mod))
-                .length;
+            return this.$store.state.thunderstoreMods.filter(
+                (mod: ThunderstoreMod) => isThunderstoreModOutdated(mod)
+            ).length;
         },
-        sortValues(): { label: string, value: string }[] {
+        sortValues(): { label: string; value: string }[] {
             return Object.keys(SortOptions).map((key: string) => ({
                 value: key,
-                label: this.$t('mods.menu.sort.' + Object.values(SortOptions)[Object.keys(SortOptions).indexOf(key)])
+                label: this.$t(
+                    "mods.menu.sort." +
+                        Object.values(SortOptions)[
+                            Object.keys(SortOptions).indexOf(key)
+                        ]
+                ),
             }));
-        }
-    }
-})
+        },
+    },
+});
 </script>
 
 <style scoped>
@@ -144,7 +162,7 @@ export default defineComponent({
 .fc_mods__menu :deep(.el-select__wrapper) {
     background-color: var(--fc-panel-bg-dark);
     box-shadow: none;
-    border: none !important;          /* remove border */
+    border: none !important; /* remove border */
 }
 
 /* text color in the control (not the dropdown list) */
@@ -152,7 +170,6 @@ export default defineComponent({
 .fc_mods__menu :deep(.el-select__selected-item) {
     color: #fff;
 }
-
 </style>
 
 <style>
