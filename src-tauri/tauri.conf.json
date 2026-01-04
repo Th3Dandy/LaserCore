@@ -7,7 +7,7 @@
     "frontendDist": "../src-vue/dist"
   },
   "productName": "LaserCore",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "identifier": "com.github.sonny-tel.lasercore",
   "app": {
     "windows": [
@@ -36,7 +36,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDY1OTc1NzAwNUEyRjE1OTgKUldTWUZTOWFBRmVYWlQwejg1WS9DeWwwY08xeDB5WStNaG03OXlkYlVUM1JxdGY4WHR5Y25TbGUK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDdBQjNDMjIxOUE5QzYyNkYKUldSdllweWFJY0t6ZWhqVTVKbFlXUUtUN2VJMWp1SnN1eWtBUkZxelhpQm5CQ1VlVlpVQmdSM20K",
       "endpoints": [
         "https://github.com/R2Ion/LaserCore/releases/latest/download/latest-release.json"
       ]
