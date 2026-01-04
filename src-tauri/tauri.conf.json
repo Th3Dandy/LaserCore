@@ -36,9 +36,9 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEVBNjM3NzJGRDgxMTU4NUUKUldSZVdCSFlMM2RqNmdhK3pIZjhEYWg2WnZGSFJqdkhLSHNOSjNhaW5VQVFLaHV3YWFDTnFKWWQK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDY1OTc1NzAwNUEyRjE1OTgKUldTWUZTOWFBRmVYWlQwejg1WS9DeWwwY08xeDB5WStNaG03OXlkYlVUM1JxdGY4WHR5Y25TbGUK",
       "endpoints": [
-        "https://github.com/R2NorthstarTools/FlightCore/releases/latest/download/latest-release.json"
+        "https://github.com/R2Ion/LaserCore/releases/latest/download/latest-release.json"
       ]
     }
   }
