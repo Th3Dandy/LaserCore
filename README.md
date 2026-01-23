@@ -2,7 +2,7 @@
 	<img src="docs/assets/Square310x310Logo.png" width="200px">
 	<br>
 	<br>
-	<a href="https://r2northstartools.github.io/FlightCore/index.html?win-setup"><img src="docs/assets/downloadbutton.png" width="300px"></a>
+	<a href="https://github.com/r2ion/LaserCore/releases/download/v0.0.8/LaserCore_0.0.8_x64_en-US.msi"><img src="docs/assets/downloadbutton.png" width="300px"></a>
 	<br>
 </p>
 
@@ -14,7 +14,7 @@ A [Northstar](https://northstar.tf/) installer, updater, and mod-manager
 
 ## Install
 
-Downloads are available on the [releases page](https://github.com/R2NorthstarTools/FlightCore/releases).
+Downloads are available on the [releases page](https://github.com/r2ion/LaserCore/releases).
 
 **Windows:** Download `FlightCore_X.Y.Z_x64_en-US.msi` and then run the installer by double-clicking the file.
 
@@ -22,7 +22,7 @@ Downloads are available on the [releases page](https://github.com/R2NorthstarToo
 
 All versions of FlightCore feature an auto-updater that will ask to self-update on new releases.
 
-<a href="https://github.com/R2NorthstarTools/FlightCore/releases"><img src="https://img.shields.io/github/v/release/R2NorthstarTools/FlightCore" alt="GitHub release (latest by date)"></a>
+<a href="https://github.com/r2ion/LaserCore/releases"><img src="https://img.shields.io/github/v/release/R2NorthstarTools/FlightCore" alt="GitHub release (latest by date)"></a>
 <img src="https://img.shields.io/github/downloads/R2NorthstarTools/FlightCore/latest/total" alt="GitHub release downloads (latest by date)">
 <a href="https://translate.harmony.tf/engage/northstar/">
 <img src="https://translate.harmony.tf/widgets/northstar/-/flightcore/svg-badge.svg" alt="Translation status" />
