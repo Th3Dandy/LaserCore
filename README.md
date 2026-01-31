@@ -6,19 +6,19 @@
 	<br>
 </p>
 
-# FlightCore
+# LaserCore
 
-A [Northstar](https://northstar.tf/) installer, updater, and mod-manager
+An [Ion](https://github.com/r2ion/Ion) installer, ~~updater~~ (soon i think), and mod-manager
 
-![FlightCore screenshot](docs/assets/main-window-screenshot.png)
+![Ion screenshot](https://github.com/r2ion/Ion/blob/main/thunderstore/icon.png)
 
 ## Install
 
-Downloads are available on the [releases page](https://github.com/R2NorthstarTools/FlightCore/releases).
+Downloads are available on the [releases page](https://github.com/r2ion/LaserCore/releases/latest).
 
 **Windows:** Download `LaserCore_X.Y.Z_x64_en-US.msi` and then run the installer by double-clicking the file.
 
-**Linux:** Download `laser-core_X.Y.Z_amd64.AppImage`, put it in a preferred location and make it executable. A Flatpak version is planned for the future.
+**Linux:** Download `laser-core_X.Y.Z_amd64.AppImage`, put it in a preferred location and make it executable. Can anyone tell me whatever the fuck a flatpak is
 
 All versions of LaserCore do not currently feature an auto-updater that will ask to self-update on new releases. this is because pepto kinda enjoys eating rocks
 
