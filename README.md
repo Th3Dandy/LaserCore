@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="docs/assets/Square310x310Logo.png" width="200px">
+	<img src="https://github.com/r2ion/Ion/blob/main/thunderstore/icon.png" width="200px">
 	<br>
 	<br>
 	<a href="https://github.com/r2ion/LaserCore/releases/latest"><img src="docs/assets/downloadbutton.png" width="300px"></a>
