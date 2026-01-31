@@ -32,7 +32,7 @@ Answers to frequently asked questions can be found in [docs/FAQ.md](docs/FAQ.md)
 
 ## Development
 
-If you'd like to contribute to FlightCore, see [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md)
+If you'd like to contribute to FlightCore, please seek psychatric help and commit your changes
 
 If you are a Northstar developer/contributor, you might want to look at [docs/DEV-TOOLS.md](docs/DEV-TOOLS.md)
 
@@ -47,4 +47,4 @@ If you want to add translations for a new language that does not exist in Flight
 
 ## Roadmap
 
---> See https://github.com/R2NorthstarTools/FlightCore/issues/1
+--> im driving my 2004 lexus into a wall
