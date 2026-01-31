@@ -22,8 +22,8 @@ Downloads are available on the [releases page](https://github.com/R2NorthstarToo
 
 All versions of LaserCore do not currently feature an auto-updater that will ask to self-update on new releases. this is because pepto kinda enjoys eating rocks
 
-<a href="https://github.com/R2NorthstarTools/FlightCore/releases"><img src="https://img.shields.io/github/v/release/R2NorthstarTools/FlightCore" alt="GitHub release (latest by date)"></a>
-<img src="https://img.shields.io/github/downloads/R2NorthstarTools/FlightCore/latest/total" alt="GitHub release downloads (latest by date)">
+<a href="https://github.com/r2ion/LaserCore/releases"><img src="https://img.shields.io/github/v/release/r2ion/LaserCore" alt="GitHub release (latest by date)"></a>
+<img src="https://img.shields.io/github/downloads/r2ion/LaserCore/latest/total" alt="GitHub release downloads (latest by date)">
 <a href="https://translate.harmony.tf/engage/northstar/">
 <img src="https://translate.harmony.tf/widgets/northstar/-/flightcore/svg-badge.svg" alt="Translation status" />
 </a>
