@@ -41,10 +41,6 @@ If you are a Northstar developer/contributor, you might want to look at [docs/DE
 Translations can be submitted via [weblate](https://translate.harmony.tf/projects/northstar/flightcore/). \
 If you want to add translations for a new language that does not exist in FlightCore yet, please [reach out via GitHub issues](https://github.com/R2NorthstarTools/FlightCore/issues/new) so that we can add support for it.
 
-<a href="https://translate.harmony.tf/engage/northstar/">
-<img src="https://translate.harmony.tf/widgets/northstar/-/flightcore/multi-auto.svg" alt="Translation status" />
-</a>
-
 ## Roadmap
 
 --> im driving my 2004 lexus into a wall
