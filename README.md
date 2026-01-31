@@ -2,7 +2,7 @@
 	<img src="docs/assets/Square310x310Logo.png" width="200px">
 	<br>
 	<br>
-	<a href="https://r2northstartools.github.io/FlightCore/index.html?win-setup"><img src="docs/assets/downloadbutton.png" width="300px"></a>
+	<a href="https://github.com/r2ion/LaserCore/releases/latest"><img src="docs/assets/downloadbutton.png" width="300px"></a>
 	<br>
 </p>
 
