@@ -10,7 +10,7 @@
 
 An [Ion](https://github.com/r2ion/Ion) installer, ~~updater~~ (soon i think), and mod-manager
 
-![Ion screenshot](https://github.com/r2ion/Ion/blob/main/thunderstore/icon.png)
+![Ion screenshot](please add a screenshot)
 
 ## Install
 
