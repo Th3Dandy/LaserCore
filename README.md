@@ -16,11 +16,11 @@ A [Northstar](https://northstar.tf/) installer, updater, and mod-manager
 
 Downloads are available on the [releases page](https://github.com/R2NorthstarTools/FlightCore/releases).
 
-**Windows:** Download `FlightCore_X.Y.Z_x64_en-US.msi` and then run the installer by double-clicking the file.
+**Windows:** Download `LaserCore_X.Y.Z_x64_en-US.msi` and then run the installer by double-clicking the file.
 
-**Linux:** Download `flight-core_X.Y.Z_amd64.AppImage`, put it in a preferred location and make it executable. A Flatpak version is planned for the future.
+**Linux:** Download `laser-core_X.Y.Z_amd64.AppImage`, put it in a preferred location and make it executable. A Flatpak version is planned for the future.
 
-All versions of FlightCore feature an auto-updater that will ask to self-update on new releases.
+All versions of LaserCore do not currently feature an auto-updater that will ask to self-update on new releases. this is because pepto kinda enjoys eating rocks
 
 <a href="https://github.com/R2NorthstarTools/FlightCore/releases"><img src="https://img.shields.io/github/v/release/R2NorthstarTools/FlightCore" alt="GitHub release (latest by date)"></a>
 <img src="https://img.shields.io/github/downloads/R2NorthstarTools/FlightCore/latest/total" alt="GitHub release downloads (latest by date)">
