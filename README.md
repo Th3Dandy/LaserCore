@@ -24,8 +24,6 @@ All versions of LaserCore do not currently feature an auto-updater that will ask
 
 <a href="https://github.com/r2ion/LaserCore/releases"><img src="https://img.shields.io/github/v/release/r2ion/LaserCore" alt="GitHub release (latest by date)"></a>
 <img src="https://img.shields.io/github/downloads/r2ion/LaserCore/latest/total" alt="GitHub release downloads (latest by date)">
-<a href="https://translate.harmony.tf/engage/northstar/">
-<img src="https://translate.harmony.tf/widgets/northstar/-/flightcore/svg-badge.svg" alt="Translation status" />
 </a>
 
 ## Frequently Asked Questions (FAQ)
